@@ -57,7 +57,7 @@ public class ECommerceApp extends HttpApp {
 		}
 		
 		new ECommerceApp(new ECommerceController(greeterActor)).bindRoute("localhost", 8080, frontSystem);
-		System.out.println("Type RETURN to exit");
+		System.out.println("Type RETURN to exit the app");
 		System.in.read();
 		frontSystem.terminate();
 
