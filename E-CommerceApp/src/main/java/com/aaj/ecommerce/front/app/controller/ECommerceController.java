@@ -16,23 +16,22 @@ import akka.http.javadsl.server.directives.PathDirectives;
 
 public class ECommerceController extends PathDirectives implements Controller{
 
-	final ActorRef greeterActor;
-	final CompletableFuture<Route> routes;
+	// A RequestVal is a type-safe representation of some aspect of the request.
+    // In this case it represents the `name` URI parameter of type String.
+    private final RequestVal<String> name = Parameters.stringValue("name").withDefault("Mister X");
+	
+	private final ActorRef greeterActor;
+	private final CompletableFuture<Route> routes;
 	
 	public ECommerceController(ActorRef greeterActor) {
 		this.greeterActor = Objects.requireNonNull(greeterActor);
-		routes = initRoutes();
+		this.routes = initRoutes();
 	}
 
 	@Override
 	public CompletableFuture<Route> defineRoutes() {
 		return this.routes;
 	}
-	
-	
-	// A RequestVal is a type-safe representation of some aspect of the request.
-    // In this case it represents the `name` URI parameter of type String.
-    private RequestVal<String> name = Parameters.stringValue("name").withDefault("Mister X");
 	
 	private CompletionStage<RouteResult> handleHelloL(final RequestContext ctx){
 		return PatternsCS.ask(greeterActor, name.get(ctx), 1000).thenApplyAsync(
